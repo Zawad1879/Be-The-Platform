@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Be</string>
+    <string name="title_activity_main">Be</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="facebook_app_id">247393922315382</string>
+    <string name="title_activity_faq">FAQ</string>
+    <string name="title_activity_danger_zone">Danger Zone</string>
+    <string name="title_activity_report">Map</string>
+    <string name="dami_text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo necessitatibus, nesciunt rem soluta suscipit ullam voluptate! Aspernatur, consectetur deserunt expedita fuga, id impedit inventore iusto nobis qui repellendus totam voluptate.</string>
+    <string name="title_activity_identify">Identify Yourself</string>
+
+    <string name="is_user_logged_in">logged_in</string>
+    <string name="username">name</string>
+    <string name="user_id">user_id</string>
+    <string name="email">email</string>
+    <string name="phone">phone</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+</resources>

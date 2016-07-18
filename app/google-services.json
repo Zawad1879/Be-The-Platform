@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "917632890628",
+    "project_id": "be--the-platform"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917632890628:android:284c5f9efdde5d36",
+        "android_client_info": {
+          "package_name": "me.argha.tonu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDG50maXoRVeac3L-DlrH5uCrDmiJslDjc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

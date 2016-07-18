@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Settings"/>
+        <item
+            android:id="@+id/emergency_contacts"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Emergency contacts"/>
+        <item
+            android:id="@+id/profile"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Profile"/>
+        <item
+            android:id="@+id/faq"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="FAQ"/>
+        <item
+            android:id="@+id/logout"
+            android:title="Logout"/>
+
+
+    </group>
+
+    <item android:title="Know the rules">
+        <menu>
+            <item
+                android:id="@+id/laws"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Laws And Acts"/>
+            <item
+                android:id="@+id/terms_and_conditions"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Terms And Conditions"/>
+        </menu>
+    </item>
+
+</menu>
