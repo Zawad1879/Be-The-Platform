@@ -1,15 +1,18 @@
 package me.argha.tonu.activity;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -36,6 +40,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -43,8 +48,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cz.msebera.android.httpclient.Header;
 import me.argha.tonu.R;
+import me.argha.tonu.app.Config;
 import me.argha.tonu.app.EndPoints;
+import me.argha.tonu.gcm.GcmIntentService;
+import me.argha.tonu.helpers.EmergencyContactsDataSource;
 import me.argha.tonu.helpers.MyPreferenceManager;
+import me.argha.tonu.model.Contact;
 import me.argha.tonu.utils.Util;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -57,9 +66,9 @@ public class MainActivity extends AppCompatActivity
     ImageView mainHelpBtn;
     String filename;
     String username;
+    EmergencyContactsDataSource contactsDataSource;
 
-
-
+    BroadcastReceiver broadcastReceiver;
     MyPreferenceManager preferenceManager;
     boolean clicked=false;
     GoogleApiClient googleApiClient;
@@ -76,8 +85,8 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
+        handleBroadcastReceivers();
+        contactsDataSource= new EmergencyContactsDataSource(this);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -104,6 +113,62 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void handleBroadcastReceivers() {
+        broadcastReceiver= new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getAction().equals(Config.REGISTRATION_COMPLETE)){
+                    String token= intent.getStringExtra("token");
+                    Util.showToast(MainActivity.this, token);
+                    Log.i(TAG,"GCM Token "+token);
+                }else if(intent.getAction().equals(Config.SENT_TOKEN_TO_SERVER)){
+                    Util.showToast(MainActivity.this, "GCM Token stored in server");
+                }else if(intent.getAction().equals(Config.PUSH_NOTIFICATION)){
+                    Util.showToast(MainActivity.this, "Push Notification has been received");
+                }
+            }
+        };
+        if(checkPlayServices()){
+            registerGCM();
+        }
+
+    }
+
+    private void registerGCM() {
+        Intent intent= new Intent(this, GcmIntentService.class);
+        intent.putExtra("key","register");
+        startService(intent);
+    }
+
+    private boolean checkPlayServices(){
+        GoogleApiAvailability googleApiAvailability= GoogleApiAvailability.getInstance();
+        int resultCode= googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if(resultCode != ConnectionResult.SUCCESS){
+            if(googleApiAvailability.isUserResolvableError(resultCode)){
+                googleApiAvailability.getErrorDialog(this, resultCode, Config.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+
+            }else{
+                Log.i(TAG, "Device does not support google play services");
+                Util.showToast(this, "This device does not support google play services!");
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(Config.REGISTRATION_COMPLETE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(Config.PUSH_NOTIFICATION));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+    }
+
     @OnClick({R.id.mainReportBtn,R.id.mainDangerZoneBtn,R.id.mainHelpBtn,R.id.mainExpertHelpBtn})
     public void mainBtnClicks(View view){
         switch (view.getId()){
@@ -127,8 +192,8 @@ public class MainActivity extends AppCompatActivity
                             ".\nAddress: Map coordinates\nLocation: "+lat+", "+lon+"\n" +
                             "http://maps.google.com/?q="+lat+", "+lon;
 //                    String number = "01621209959";
-                    Set<String> numbers= preferenceManager.getEmergencyContactNumbers();
-                    for(String n: numbers){
+                    List<Contact> numbers= contactsDataSource.getAllContacts();
+                    for(Contact n: numbers){
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             // Call some material design APIs here
 
@@ -136,7 +201,7 @@ public class MainActivity extends AppCompatActivity
                             // Implement this feature without material design
 //                            SmsManager.getDefault().sendTextMessage(n, null, messageToSend, null,null);
                         }
-                        String [] numArray= {n};
+                        String [] numArray= {n.getNumber()};
                         AsyncHttpClient asyncHttpClient= new AsyncHttpClient();
                         RequestParams params= new RequestParams();
                         params.put("user_id",preferenceManager.pref.getString("user_id",

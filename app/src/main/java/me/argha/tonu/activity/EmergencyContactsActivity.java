@@ -108,7 +108,7 @@ public class EmergencyContactsActivity extends AppCompatActivity {
                         if (number.length() == 0 || name.length() == 0) {
                             return;
                         }
-                        Contact newContact=new Contact(preferenceManager.generateUserId(),name,number);
+                        Contact newContact=new Contact(preferenceManager.generateUserId(contactsDataSource.getContactsCount()),name,number);
                         try{
                             contactsDataSource.addContact(newContact);
                         }catch (Exception e){

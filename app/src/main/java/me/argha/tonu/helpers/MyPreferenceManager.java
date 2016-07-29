@@ -129,10 +129,10 @@ public class MyPreferenceManager {
         setEmergencyContactNumbers(emergencyContacts);
     }
 
-    public int generateUserId(){
-        int count= pref.getInt(KEY_GENERATE_USER_ID,0);
-        count++;
-        editor.putInt(KEY_GENERATE_USER_ID,count);
+    public int generateUserId(int count){
+//        int count= pref.getInt(KEY_GENERATE_USER_ID,0);
+//        count++;
+        editor.putInt(KEY_GENERATE_USER_ID,++count);
         editor.commit();
         return count;
     }

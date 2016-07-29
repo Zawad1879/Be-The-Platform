@@ -95,8 +95,9 @@ public class EmergencyContactsDataSource extends SQLiteOpenHelper {
     public int getContactsCount() {
         SQLiteDatabase db= this.getReadableDatabase();
         Cursor cursor= db.rawQuery("Select * from "+TABLE_CONTACTS, null);
+        int res= cursor.getCount();
         cursor.close();
-        return cursor.getCount();
+        return res;
     }
     // Updating single Contact
     public int updateContact(Contact Contact) {

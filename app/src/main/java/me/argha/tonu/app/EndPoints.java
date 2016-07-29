@@ -3,8 +3,8 @@ package me.argha.tonu.app;
 public class EndPoints {
 
     // localhost url -
-    public static String BASE = "192.168.0.102";
-    public static String BASE_URL = "http://"+BASE+"/tonu/v1";
+    public static String BASE = "192.168.0.103";
+    public static String BASE_URL = "http://"+BASE+"/Be/v1";
     public static final String LOGIN = BASE_URL + "/user/login";
     public static final String UPDATEGCM = BASE_URL + "/user/";
     public static final String SENDMESSAGE = BASE_URL + "/user/sendmessage";

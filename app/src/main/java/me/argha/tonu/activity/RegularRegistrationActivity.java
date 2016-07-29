@@ -116,8 +116,8 @@ public class RegularRegistrationActivity extends AppCompatActivity {
                 params.put(getResources().getString(R.string.email), email.getText().toString());
                 params.put(getResources().getString(R.string.phone), phonenumber.getText().toString());
                 params.put("gcm_registration_id","gcm_id");
-                String url= EndPoints.LOGIN+"/user/login";
-                asyncHttpClient.post(EndPoints.LOGIN,params,new JsonHttpResponseHandler(){
+                String url= EndPoints.LOGIN;
+                asyncHttpClient.post(url,params,new JsonHttpResponseHandler(){
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         super.onSuccess(statusCode, headers, response);
